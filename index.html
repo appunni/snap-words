@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snap Words Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="game-container">
+        <h1>Snap Words Game</h1>
+        <div id="startScreen" class="start-screen">
+            <button id="startButton" class="start-button">Start Game 🎯</button>
+        </div>
+        <div id="gameContent" class="game-content" style="display: none;">
+            <div class="progress">Word <span id="wordCount">1</span>/5</div>
+            <div class="button-group">
+                <button id="hintButton">🔊 Hint</button>
+                <button id="resetButton">🔄 Reset</button>
+            </div>
+            <div id="wordDisplay" class="word-display"></div>
+            <div id="letterBank" class="letter-bank"></div>
+            <div id="message" class="message"></div>
+            <div id="wrongAttempt" class="wrong-attempt" style="display: none;">
+                <p>Almost there! Would you like to try again?</p>
+                <div class="feedback-buttons">
+                    <button id="retryButton" class="feedback-button retry">Try Again 🔄</button>
+                    <button id="skipButton" class="feedback-button skip">Next Word ⏭</button>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button id="nextButton" class="nav-button" style="display: none;">Next Word ▶</button>
+                <button id="playAgainButton" class="nav-button" style="display: none;">Play Again 🎮</button>
+            </div>
+        </div>
+    </div>
+    <script src="./script.js"></script>
+</body>
+
+</html>
