@@ -34,14 +34,7 @@ class SnapWordGame {
         this.addStartGameListener();
         this.initializeVoices();
         this.wrongAttemptShown = false;
-        this.isDragging = false;
 
-        // Prevent page scroll during drag
-        document.addEventListener('touchmove', (e) => {
-            if (this.isDragging) {
-                e.preventDefault();
-            }
-        }, { passive: false });
     }
 
     initializeElements() {
@@ -122,71 +115,26 @@ class SnapWordGame {
         const letters = [...this.currentWord].sort(() => Math.random() - 0.5);
         letters.forEach(letter => {
             const tile = document.createElement('div');
-            tile.className = 'w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 text-white rounded-lg flex items-center justify-center text-xl cursor-move select-none transform transition-all duration-200 hover:scale-110 active:scale-95 touch-none';
+            tile.className = 'w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 text-white rounded-lg flex items-center justify-center text-xl cursor-pointer select-none transform transition-all duration-200 hover:scale-110 active:scale-95';
             tile.dataset.tile = 'true';
             tile.textContent = letter;
-            tile.draggable = true;
 
-            // Add touch events
-            tile.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                this.isDragging = true;
-                tile.classList.add('opacity-50', 'scale-105');
-            }, { passive: false });
-
-            tile.addEventListener('touchend', () => {
-                this.isDragging = false;
-                tile.classList.remove('opacity-50', 'scale-105');
+            // Add click/tap handler
+            tile.addEventListener('click', () => {
+                const emptySlot = this.wordDisplay.querySelector('[data-slot]:empty');
+                if (emptySlot) {
+                    emptySlot.textContent = letter;
+                    emptySlot.dataset.letter = letter;
+                    tile.remove();
+                    this.checkWin();
+                }
             });
             this.letterBank.appendChild(tile);
         });
     }
 
     setupDragAndDrop() {
-        this.letterBank.addEventListener('dragstart', (e) => {
-            if (e.target.dataset.tile) {
-                e.target.classList.add('opacity-50', 'scale-105');
-                e.dataTransfer.setData('text/plain', e.target.textContent);
-            }
-        });
-
-        this.letterBank.addEventListener('dragend', (e) => {
-            if (e.target.dataset.tile) {
-                e.target.classList.remove('opacity-50', 'scale-105');
-            }
-        });
-
-        const slots = this.wordDisplay.querySelectorAll('[data-slot]');
-        slots.forEach(slot => {
-            slot.addEventListener('dragover', (e) => {
-                e.preventDefault();
-            });
-
-            slot.addEventListener('touchend', (e) => {
-                if (this.isDragging) {
-                    const tile = document.querySelector('[data-tile].opacity-50');
-                    if (tile && !slot.dataset.letter) {
-                        slot.textContent = tile.textContent;
-                        slot.dataset.letter = tile.textContent;
-                        tile.remove();
-                        this.checkWin();
-                    }
-                }
-            });
-
-            slot.addEventListener('drop', (e) => {
-                e.preventDefault();
-                const letter = e.dataTransfer.getData('text/plain');
-                const tile = document.querySelector('[data-tile].opacity-50');
-
-                if (tile && !slot.dataset.letter) {
-                    slot.textContent = letter;
-                    slot.dataset.letter = letter;
-                    tile.remove();
-                    this.checkWin();
-                }
-            });
-        });
+        // No longer needed, but keeping the method for compatibility
     }
 
     initializeVoices() {
