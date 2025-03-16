@@ -102,8 +102,9 @@ class SnapWordGame {
         this.wordDisplay.innerHTML = '';
         [...this.currentWord].forEach(() => {
             const slot = document.createElement('div');
-            slot.className = 'letter-slot';
+            slot.className = 'w-12 h-12 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-xl bg-gray-50 transition-colors duration-200';
             slot.dataset.letter = '';
+            slot.dataset.slot = 'true';
             this.wordDisplay.appendChild(slot);
         });
     }
@@ -113,7 +114,8 @@ class SnapWordGame {
         const letters = [...this.currentWord].sort(() => Math.random() - 0.5);
         letters.forEach(letter => {
             const tile = document.createElement('div');
-            tile.className = 'letter-tile';
+            tile.className = 'w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 text-white rounded-lg flex items-center justify-center text-xl cursor-move select-none transform transition-all duration-200 hover:scale-110 active:scale-95';
+            tile.dataset.tile = 'true';
             tile.textContent = letter;
             tile.draggable = true;
             this.letterBank.appendChild(tile);
@@ -122,19 +124,19 @@ class SnapWordGame {
 
     setupDragAndDrop() {
         this.letterBank.addEventListener('dragstart', (e) => {
-            if (e.target.classList.contains('letter-tile')) {
-                e.target.classList.add('dragging');
+            if (e.target.dataset.tile) {
+                e.target.classList.add('opacity-50', 'scale-105');
                 e.dataTransfer.setData('text/plain', e.target.textContent);
             }
         });
 
         this.letterBank.addEventListener('dragend', (e) => {
-            if (e.target.classList.contains('letter-tile')) {
-                e.target.classList.remove('dragging');
+            if (e.target.dataset.tile) {
+                e.target.classList.remove('opacity-50', 'scale-105');
             }
         });
 
-        const slots = this.wordDisplay.querySelectorAll('.letter-slot');
+        const slots = this.wordDisplay.querySelectorAll('[data-slot]');
         slots.forEach(slot => {
             slot.addEventListener('dragover', (e) => {
                 e.preventDefault();
@@ -143,7 +145,7 @@ class SnapWordGame {
             slot.addEventListener('drop', (e) => {
                 e.preventDefault();
                 const letter = e.dataTransfer.getData('text/plain');
-                const tile = document.querySelector('.letter-tile.dragging');
+                const tile = document.querySelector('[data-tile].opacity-50');
 
                 if (tile && !slot.dataset.letter) {
                     slot.textContent = letter;
@@ -197,7 +199,7 @@ class SnapWordGame {
     }
 
     resetCurrentWord() {
-        const slots = this.wordDisplay.querySelectorAll('.letter-slot');
+        const slots = this.wordDisplay.querySelectorAll('[data-slot]');
         slots.forEach(slot => {
             slot.textContent = '';
             slot.dataset.letter = '';
@@ -251,10 +253,10 @@ class SnapWordGame {
                 this.wrongAttemptElement.style.display = 'none';
                 this.wrongAttemptShown = false;
                 this.messageElement.textContent = '🎉 Great job! You did it!';
-                this.wordDisplay.classList.add('celebrate');
+                this.wordDisplay.classList.add('animate-celebration');
 
                 setTimeout(() => {
-                    this.wordDisplay.classList.remove('celebrate');
+                    this.wordDisplay.classList.remove('animate-celebration');
 
                     if (this.wordCount < this.maxWords) {
                         this.nextButton.style.display = 'inline-block';
