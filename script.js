@@ -103,7 +103,7 @@ class SnapWordGame {
         this.wordDisplay.innerHTML = '';
         [...this.currentWord].forEach(() => {
             const slot = document.createElement('div');
-            slot.className = 'w-14 h-14 border-3 border-dashed border-gray-300 rounded-xl flex items-center justify-center text-2xl bg-gray-50 transition-colors duration-200';
+            slot.className = 'w-14 h-14 border-4 border-dashed border-indigo-300 rounded-xl flex items-center justify-center text-2xl bg-indigo-50/30 transition-all duration-200 hover:border-indigo-400 hover:bg-indigo-50/50 before:content-["_"] before:text-indigo-300 before:animate-pulse';
             slot.dataset.letter = '';
             slot.dataset.slot = 'true';
             this.wordDisplay.appendChild(slot);
