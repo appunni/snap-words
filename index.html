@@ -18,6 +18,18 @@
                             '75%': { transform: 'scale(1.1) translateY(-10px)' },
                             '100%': { transform: 'scale(1)' }
                         },
+                        shake: {
+                            '0%, 100%': { transform: 'translateX(0)' },
+                            '20%': { transform: 'translateX(-4px)' },
+                            '40%': { transform: 'translateX(4px)' },
+                            '60%': { transform: 'translateX(-2px)' },
+                            '80%': { transform: 'translateX(2px)' }
+                        },
+                        'bounce-once': {
+                            '0%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                            '100%': { transform: 'translateY(0)' }
+                        },
                         bounce: {
                             '0%': { transform: 'scale(1)' },
                             '50%': { transform: 'scale(1.1)' },
@@ -55,7 +67,9 @@
                         bounce: 'bounce 0.3s cubic-bezier(0.36,0,0.66,1)',
                         success: 'success 1s cubic-bezier(0.36,0,0.66,1)',
                         confetti: 'confetti 1s ease-out forwards',
-                        moveToSlot: 'moveToSlot 0.4s ease-in-out'
+                        moveToSlot: 'moveToSlot 0.4s ease-in-out',
+                        shake: 'shake 0.5s cubic-bezier(0.36,0,0.66,1)',
+                        'bounce-once': 'bounce-once 0.5s cubic-bezier(0.36,0,0.66,1)'
                     }
                 }
             }
@@ -93,7 +107,7 @@
             </h1>
             <div id="startScreen" class="flex justify-center items-center min-h-[200px]">
                 <button id="startButton"
-                    class="px-10 py-6 bg-gradient-to-r from-green-400 to-green-500 text-white text-2xl rounded-full shadow-lg hover:shadow-xl hover:scale-105 transform transition-all duration-200">
+                    class="px-10 py-4 bg-gradient-to-r from-green-400 to-green-500 text-white text-2xl rounded-full shadow-lg hover:shadow-xl hover:scale-105 transform transition-all duration-200">
                     Let's Play! 🎮
                 </button>
             </div>
@@ -106,34 +120,38 @@
                 <div class="flex justify-center gap-4">
                     <button id="hintButton"
                         class="px-8 py-4 bg-gradient-to-r from-blue-400 to-blue-500 text-white text-xl rounded-full shadow-md hover:shadow-lg hover:scale-105 transform transition-all duration-200">
-                        🎵 Listen
+                        🎵
                     </button>
                     <button id="resetButton"
                         class="px-8 py-4 bg-gradient-to-r from-purple-400 to-purple-500 text-white text-xl rounded-full shadow-md hover:shadow-lg hover:scale-105 transform transition-all duration-200">
-                        🔄 Try Again
+                        🔄
                     </button>
                 </div>
                 <div id="wordDisplay" class="flex justify-center gap-2 min-h-[4rem] mb-8"></div>
                 <div id="letterBank" class="flex justify-center flex-wrap gap-2 mb-8"></div>
                 <div id="message" class="min-h-[2rem] text-lg text-green-600 text-center"></div>
-                <div id="wrongAttempt" class="bg-orange-50 border-2 border-orange-200 rounded-xl p-6 my-4"
+                <div id="wrongAttempt"
+                    class="bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 border-2 border-purple-200 rounded-2xl p-6 my-4 shadow-lg relative"
                     style="display: none;">
-                    <p class="text-orange-600 text-lg mb-4">Almost there! Would you like to try again?</p>
-                    <div class="flex justify-center gap-4">
+                    <span class="absolute -top-2 -left-2 text-2xl animate-pulse">✨</span>
+                    <span class="absolute -top-2 -right-2 text-2xl animate-pulse" style="animation-delay: 0.5s">✨</span>
+                    <div class="flex items-center mb-4">
+                        <span class="text-4xl animate-bounce">🦊</span>
+                        <p class="text-purple-600 text-lg ml-3">Almost there! Would you like to try again?</p>
+                    </div>
+                    <div class="flex justify-center gap-4 p-2 bg-white/50 rounded-xl">
                         <button id="retryButton"
-                            class="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full shadow-md hover:shadow-lg hover:scale-105 transform transition-all duration-200">Try
-                            Again 🔄</button>
+                            class="px-6 py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full shadow-md hover:shadow-lg hover:scale-105 transform transition-all duration-200">🔄</button>
                         <button id="skipButton"
-                            class="px-6 py-3 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-full shadow-md hover:shadow-lg hover:scale-105 transform transition-all duration-200">Next
-                            Word ⏭</button>
+                            class="px-6 py-4 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-full shadow-md hover:shadow-lg hover:scale-105 transform transition-all duration-200">⏭</button>
                     </div>
                 </div>
                 <div class="flex justify-center gap-4 mt-8">
                     <button id="nextButton"
-                        class="px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-full shadow-md hover:shadow-lg hover:scale-105 transform transition-all duration-200"
-                        style="display: none;">Next Word ▶</button>
+                        class="px-6 py-4 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-full shadow-md hover:shadow-lg hover:scale-105 transform transition-all duration-200"
+                        style="display: none;">▶</button>
                     <button id="playAgainButton"
-                        class="px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-full shadow-md hover:shadow-lg hover:scale-105 transform transition-all duration-200"
+                        class="px-6 py-4 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-full shadow-md hover:shadow-lg hover:scale-105 transform transition-all duration-200"
                         style="display: none;">Play Again 🎮</button>
                 </div>
             </div>

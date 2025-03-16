@@ -34,7 +34,6 @@ class SnapWordGame {
         this.addStartGameListener();
         this.initializeVoices();
         this.wrongAttemptShown = false;
-
     }
 
     initializeElements() {
@@ -263,18 +262,17 @@ class SnapWordGame {
 
         if (isComplete) {
             if (currentAttempt === this.currentWord) {
-                // Correct attempt
+                // Handle essential actions first
                 this.wrongAttemptElement.style.display = 'none';
                 this.wrongAttemptShown = false;
 
-                // Animate each letter individually with confetti
-                const slots = Array.from(this.wordDisplay.children);
-                slots.forEach((slot, index) => {
-                    setTimeout(() => {
-                        slot.classList.add('animate-success');
-                        this.createConfetti(slot);
-                    }, index * 200);
-                });
+                // Show buttons and success message immediately
+                if (this.wordCount < this.maxWords) {
+                    this.nextButton.style.display = 'inline-block';
+                } else {
+                    this.messageElement.textContent = '🏆 Congratulations! You completed all words!';
+                    this.playAgainButton.style.display = 'inline-block';
+                }
 
                 // Show success message
                 const messages = [
@@ -284,22 +282,68 @@ class SnapWordGame {
                     '🎯 Perfect match!',
                     '🎨 Brilliant work!'
                 ];
-                this.messageElement.textContent = messages[Math.floor(Math.random() * messages.length)];
+                if (this.wordCount < this.maxWords) {
+                    this.messageElement.textContent = messages[Math.floor(Math.random() * messages.length)];
+                }
 
-                // Show next button after animations complete
+                // Handle animations after essential UI updates
+                const slots = Array.from(this.wordDisplay.children);
+                slots.forEach((slot, index) => {
+                    setTimeout(() => {
+                        slot.classList.add('animate-success');
+                        this.createConfetti(slot);
+                    }, index * 200);
+                });
+
                 setTimeout(() => {
                     slots.forEach(slot => slot.classList.remove('animate-success'));
-                    if (this.wordCount < this.maxWords) {
-                        this.nextButton.style.display = 'inline-block';
-                    } else {
-                        this.messageElement.textContent = '🏆 Congratulations! You completed all words!';
-                        this.playAgainButton.style.display = 'inline-block';
-                    }
-                }, (slots.length * 200) + 1000);
+                }, (slots.length * 200) + 500);
             } else if (!this.wrongAttemptShown) {
-                // Wrong attempt - show feedback options
+                // Wrong attempt - provide visual feedback
+                const slots = Array.from(this.wordDisplay.children);
+                let correctLetters = 0;
+
+                // Analyze each letter and show feedback
+                slots.forEach((slot, index) => {
+                    const attemptLetter = slot.dataset.letter;
+                    const correctLetter = this.currentWord[index];
+
+                    if (attemptLetter === correctLetter) {
+                        slot.classList.add('bg-green-100', 'border-green-400');
+                        slot.classList.remove('border-dashed', 'border-indigo-300', 'bg-indigo-50/30');
+                        correctLetters++;
+                    } else {
+                        slot.classList.add('bg-red-100', 'border-red-400', 'animate-shake');
+                        slot.classList.remove('border-dashed', 'border-indigo-300', 'bg-indigo-50/30');
+                    }
+                });
+
+                // Show encouraging message based on how close they were
+                const progress = Math.round((correctLetters / this.currentWord.length) * 100);
+                let message;
+                if (progress >= 75) {
+                    message = `🌟 So close! ${correctLetters} out of ${this.currentWord.length} letters are correct!`;
+                } else if (progress >= 50) {
+                    message = `⭐️ Good try! You got ${correctLetters} letters right!`;
+                } else if (progress >= 25) {
+                    message = `💫 Keep going! ${correctLetters} letters match!`;
+                } else {
+                    message = "🌱 Let's try a different arrangement!";
+                }
+                this.messageElement.textContent = message;
+
+                // Show wrong attempt element with animation
                 this.wrongAttemptElement.style.display = 'block';
+                this.wrongAttemptElement.classList.add('animate-bounce-once');
                 this.wrongAttemptShown = true;
+
+                // Remove animations after they complete
+                setTimeout(() => {
+                    slots.forEach(slot => {
+                        slot.classList.remove('animate-shake');
+                    });
+                    this.wrongAttemptElement.classList.remove('animate-bounce-once');
+                }, 1000);
             }
         }
     }
