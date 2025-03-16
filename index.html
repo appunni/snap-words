@@ -13,39 +13,76 @@
                     keyframes: {
                         celebration: {
                             '0%': { transform: 'scale(1)' },
-                            '50%': { transform: 'scale(1.1) translateY(-10px)' },
+                            '25%': { transform: 'scale(1.1) translateY(-15px)' },
+                            '50%': { transform: 'scale(1.15) translateY(-5px)' },
+                            '75%': { transform: 'scale(1.1) translateY(-10px)' },
+                            '100%': { transform: 'scale(1)' }
+                        },
+                        bounce: {
+                            '0%': { transform: 'scale(1)' },
+                            '50%': { transform: 'scale(1.1)' },
                             '100%': { transform: 'scale(1)' }
                         }
                     },
                     animation: {
-                        celebration: 'celebration 0.6s cubic-bezier(0.36,0,0.66,1)'
+                        celebration: 'celebration 1s cubic-bezier(0.36,0,0.66,1)',
+                        bounce: 'bounce 0.3s cubic-bezier(0.36,0,0.66,1)'
                     }
                 }
             }
         }
     </script>
+    <style>
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        .float-animation {
+            animation: float 2s ease-in-out infinite;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center p-4">
+    <div class="min-h-screen bg-gradient-to-br from-yellow-100 to-orange-100 flex items-center justify-center p-4">
         <div
             class="w-[90%] sm:w-[400px] md:w-[450px] max-w-xl bg-white rounded-2xl shadow-xl p-8 transform transition-all">
-            <h1 class="text-3xl font-bold text-gray-800 mb-8 text-center">Snap Words Game</h1>
+            <h1 class="text-4xl font-bold text-gray-800 mb-8 text-center flex items-center justify-center gap-3">
+                <span class="float-animation">✨</span>
+                Snap Words Game
+                <span class="float-animation" style="animation-delay: 0.5s">✨</span>
+            </h1>
             <div id="startScreen" class="flex justify-center items-center min-h-[200px]">
                 <button id="startButton"
-                    class="px-8 py-4 bg-gradient-to-r from-green-500 to-green-600 text-white text-xl rounded-full shadow-lg hover:shadow-xl hover:scale-105 transform transition-all duration-200">Start
-                    Game 🎯</button>
+                    class="px-10 py-6 bg-gradient-to-r from-green-400 to-green-500 text-white text-2xl rounded-full shadow-lg hover:shadow-xl hover:scale-105 transform transition-all duration-200">
+                    Let's Play! 🎮
+                </button>
             </div>
             <div id="gameContent" class="space-y-6" style="display: none;">
-                <div class="text-lg text-gray-700 text-center">Word <span id="wordCount"
-                        class="font-semibold">1</span>/5</div>
+                <div class="text-2xl text-gray-700 text-center">
+                    <span class="float-animation inline-block">🌟</span>
+                    Word <span id="wordCount" class="font-semibold">1</span>/5
+                    <span class="float-animation inline-block" style="animation-delay: 0.3s">🌟</span>
+                </div>
                 <div class="flex justify-center gap-4">
                     <button id="hintButton"
-                        class="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full shadow-md hover:shadow-lg hover:scale-105 transform transition-all duration-200">🔊
-                        Hint</button>
+                        class="px-8 py-4 bg-gradient-to-r from-blue-400 to-blue-500 text-white text-xl rounded-full shadow-md hover:shadow-lg hover:scale-105 transform transition-all duration-200">
+                        🎵 Listen
+                    </button>
                     <button id="resetButton"
-                        class="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full shadow-md hover:shadow-lg hover:scale-105 transform transition-all duration-200">🔄
-                        Reset</button>
+                        class="px-8 py-4 bg-gradient-to-r from-purple-400 to-purple-500 text-white text-xl rounded-full shadow-md hover:shadow-lg hover:scale-105 transform transition-all duration-200">
+                        🔄 Try Again
+                    </button>
                 </div>
                 <div id="wordDisplay" class="flex justify-center gap-2 min-h-[4rem] mb-8"></div>
                 <div id="letterBank" class="flex justify-center flex-wrap gap-2 mb-8"></div>

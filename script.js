@@ -103,7 +103,7 @@ class SnapWordGame {
         this.wordDisplay.innerHTML = '';
         [...this.currentWord].forEach(() => {
             const slot = document.createElement('div');
-            slot.className = 'w-12 h-12 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-xl bg-gray-50 transition-colors duration-200';
+            slot.className = 'w-14 h-14 border-3 border-dashed border-gray-300 rounded-xl flex items-center justify-center text-2xl bg-gray-50 transition-colors duration-200';
             slot.dataset.letter = '';
             slot.dataset.slot = 'true';
             this.wordDisplay.appendChild(slot);
@@ -114,19 +114,31 @@ class SnapWordGame {
         this.letterBank.innerHTML = '';
         const letters = [...this.currentWord].sort(() => Math.random() - 0.5);
         letters.forEach(letter => {
+            const tileColors = [
+                'from-blue-400 to-blue-500',
+                'from-green-400 to-green-500',
+                'from-purple-400 to-purple-500',
+                'from-pink-400 to-pink-500',
+                'from-indigo-400 to-indigo-500'
+            ];
+            const randomColor = tileColors[Math.floor(Math.random() * tileColors.length)];
+
             const tile = document.createElement('div');
-            tile.className = 'w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 text-white rounded-lg flex items-center justify-center text-xl cursor-pointer select-none transform transition-all duration-200 hover:scale-110 active:scale-95';
+            tile.className = `w-14 h-14 bg-gradient-to-br ${randomColor} text-white rounded-xl flex items-center justify-center text-2xl cursor-pointer select-none transform transition-all duration-200 hover:scale-110 active:scale-95`;
             tile.dataset.tile = 'true';
             tile.textContent = letter;
 
-            // Add click/tap handler
+            // Add click/tap handler with animation
             tile.addEventListener('click', () => {
                 const emptySlot = this.wordDisplay.querySelector('[data-slot]:empty');
                 if (emptySlot) {
-                    emptySlot.textContent = letter;
-                    emptySlot.dataset.letter = letter;
-                    tile.remove();
-                    this.checkWin();
+                    tile.classList.add('animate-bounce');
+                    setTimeout(() => {
+                        emptySlot.textContent = letter;
+                        emptySlot.dataset.letter = letter;
+                        tile.remove();
+                        this.checkWin();
+                    }, 300);
                 }
             });
             this.letterBank.appendChild(tile);
@@ -232,7 +244,14 @@ class SnapWordGame {
                 // Correct attempt
                 this.wrongAttemptElement.style.display = 'none';
                 this.wrongAttemptShown = false;
-                this.messageElement.textContent = '🎉 Great job! You did it!';
+                const messages = [
+                    '🎉 Fantastic job!',
+                    '⭐️ You\'re amazing!',
+                    '🌟 Super duper!',
+                    '🎯 Perfect match!',
+                    '🎨 Brilliant work!'
+                ];
+                this.messageElement.textContent = messages[Math.floor(Math.random() * messages.length)];
                 this.wordDisplay.classList.add('animate-celebration');
 
                 setTimeout(() => {
