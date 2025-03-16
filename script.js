@@ -34,6 +34,14 @@ class SnapWordGame {
         this.addStartGameListener();
         this.initializeVoices();
         this.wrongAttemptShown = false;
+        this.isDragging = false;
+
+        // Prevent page scroll during drag
+        document.addEventListener('touchmove', (e) => {
+            if (this.isDragging) {
+                e.preventDefault();
+            }
+        }, { passive: false });
     }
 
     initializeElements() {
@@ -114,10 +122,22 @@ class SnapWordGame {
         const letters = [...this.currentWord].sort(() => Math.random() - 0.5);
         letters.forEach(letter => {
             const tile = document.createElement('div');
-            tile.className = 'w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 text-white rounded-lg flex items-center justify-center text-xl cursor-move select-none transform transition-all duration-200 hover:scale-110 active:scale-95';
+            tile.className = 'w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 text-white rounded-lg flex items-center justify-center text-xl cursor-move select-none transform transition-all duration-200 hover:scale-110 active:scale-95 touch-none';
             tile.dataset.tile = 'true';
             tile.textContent = letter;
             tile.draggable = true;
+
+            // Add touch events
+            tile.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                this.isDragging = true;
+                tile.classList.add('opacity-50', 'scale-105');
+            }, { passive: false });
+
+            tile.addEventListener('touchend', () => {
+                this.isDragging = false;
+                tile.classList.remove('opacity-50', 'scale-105');
+            });
             this.letterBank.appendChild(tile);
         });
     }
@@ -140,6 +160,18 @@ class SnapWordGame {
         slots.forEach(slot => {
             slot.addEventListener('dragover', (e) => {
                 e.preventDefault();
+            });
+
+            slot.addEventListener('touchend', (e) => {
+                if (this.isDragging) {
+                    const tile = document.querySelector('[data-tile].opacity-50');
+                    if (tile && !slot.dataset.letter) {
+                        slot.textContent = tile.textContent;
+                        slot.dataset.letter = tile.textContent;
+                        tile.remove();
+                        this.checkWin();
+                    }
+                }
             });
 
             slot.addEventListener('drop', (e) => {
