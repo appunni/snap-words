@@ -244,6 +244,17 @@ class SnapWordGame {
                 // Correct attempt
                 this.wrongAttemptElement.style.display = 'none';
                 this.wrongAttemptShown = false;
+
+                // Animate each letter individually with confetti
+                const slots = Array.from(this.wordDisplay.children);
+                slots.forEach((slot, index) => {
+                    setTimeout(() => {
+                        slot.classList.add('animate-success');
+                        this.createConfetti(slot);
+                    }, index * 200);
+                });
+
+                // Show success message
                 const messages = [
                     '🎉 Fantastic job!',
                     '⭐️ You\'re amazing!',
@@ -252,23 +263,39 @@ class SnapWordGame {
                     '🎨 Brilliant work!'
                 ];
                 this.messageElement.textContent = messages[Math.floor(Math.random() * messages.length)];
-                this.wordDisplay.classList.add('animate-celebration');
 
+                // Show next button after animations complete
                 setTimeout(() => {
-                    this.wordDisplay.classList.remove('animate-celebration');
-
+                    slots.forEach(slot => slot.classList.remove('animate-success'));
                     if (this.wordCount < this.maxWords) {
                         this.nextButton.style.display = 'inline-block';
                     } else {
                         this.messageElement.textContent = '🏆 Congratulations! You completed all words!';
                         this.playAgainButton.style.display = 'inline-block';
                     }
-                }, 1500);
+                }, (slots.length * 200) + 1000);
             } else if (!this.wrongAttemptShown) {
                 // Wrong attempt - show feedback options
                 this.wrongAttemptElement.style.display = 'block';
                 this.wrongAttemptShown = true;
             }
+        }
+    }
+
+    createConfetti(element) {
+        const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEEAD'];
+        const rect = element.getBoundingClientRect();
+
+        for (let i = 0; i < 10; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'absolute w-2 h-2 rounded-full animate-confetti';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.left = `${rect.left + rect.width / 2 + (Math.random() * 20 - 10)}px`;
+            confetti.style.top = `${rect.top + rect.height / 2}px`;
+            document.body.appendChild(confetti);
+
+            // Remove confetti after animation
+            setTimeout(() => confetti.remove(), 1000);
         }
     }
 }
