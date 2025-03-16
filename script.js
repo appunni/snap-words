@@ -128,17 +128,39 @@ class SnapWordGame {
             tile.dataset.tile = 'true';
             tile.textContent = letter;
 
-            // Add click/tap handler with animation
+            // Add click/tap handler with improved animation
             tile.addEventListener('click', () => {
                 const emptySlot = this.wordDisplay.querySelector('[data-slot]:empty');
                 if (emptySlot) {
-                    tile.classList.add('animate-bounce');
+                    // Get positions for animation
+                    const tileRect = tile.getBoundingClientRect();
+                    const slotRect = emptySlot.getBoundingClientRect();
+
+                    // Create moving clone
+                    const clone = tile.cloneNode(true);
+                    clone.style.position = 'fixed';
+                    clone.style.left = `${tileRect.left}px`;
+                    clone.style.top = `${tileRect.top}px`;
+                    clone.style.width = `${tileRect.width}px`;
+                    clone.style.height = `${tileRect.height}px`;
+                    clone.style.zIndex = '50';
+                    clone.style.transition = 'all 0.4s ease-in-out';
+                    document.body.appendChild(clone);
+
+                    // Start animation
+                    requestAnimationFrame(() => {
+                        clone.classList.add('animate-moveToSlot');
+                        clone.style.transform = `translate(${slotRect.left - tileRect.left}px, ${slotRect.top - tileRect.top}px)`;
+                    });
+
+                    // Update slot after animation
                     setTimeout(() => {
                         emptySlot.textContent = letter;
                         emptySlot.dataset.letter = letter;
+                        clone.remove();
                         tile.remove();
                         this.checkWin();
-                    }, 300);
+                    }, 400);
                 }
             });
             this.letterBank.appendChild(tile);

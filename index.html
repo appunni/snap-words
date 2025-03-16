@@ -34,13 +34,28 @@
                         confetti: {
                             '0%': { transform: 'translateY(0) scale(0)', opacity: '1' },
                             '100%': { transform: 'translateY(-100px) scale(1) rotate(360deg)', opacity: '0' }
+                        },
+                        moveToSlot: {
+                            '0%': {
+                                transform: 'scale(1) translateY(0)',
+                                opacity: '1'
+                            },
+                            '50%': {
+                                transform: 'scale(1.2) translateY(-20px)',
+                                opacity: '0.8'
+                            },
+                            '100%': {
+                                transform: 'scale(1) translateY(0)',
+                                opacity: '1'
+                            }
                         }
                     },
                     animation: {
                         celebration: 'celebration 1s cubic-bezier(0.36,0,0.66,1)',
                         bounce: 'bounce 0.3s cubic-bezier(0.36,0,0.66,1)',
                         success: 'success 1s cubic-bezier(0.36,0,0.66,1)',
-                        confetti: 'confetti 1s ease-out forwards'
+                        confetti: 'confetti 1s ease-out forwards',
+                        moveToSlot: 'moveToSlot 0.4s ease-in-out'
                     }
                 }
             }
